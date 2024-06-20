@@ -1,0 +1,64 @@
+const phoneLoading = async (searchText, isShowAll) =>{
+    const res = await fetch (`https://openapi.programming-hero.com/api/phones?search=${searchText}`)
+    const data = await res.json();
+    const phones = data.data;
+    displayData(phones, isShowAll)
+    }
+    
+    displayData = (phones, isShowAll) => {
+        const phoneContainer = document.getElementById('phoneContainer')
+        phoneContainer.innerHTML = '';
+        const showAllButton = document.getElementById('showAll')
+        if(phones.length>12 && !isShowAll){
+            showAllButton.classList.remove('hidden')
+        }
+        else{
+            showAllButton.classList.add('hidden')
+        }
+        if(!isShowAll)
+        {
+          phones = phones.slice(0,12);
+        }
+    
+        phones.forEach(phone => {
+            console.log(phone)
+            const phoneCard = document.createElement('div')
+            phoneCard.classList = `card w-96 bg-gray-100 shadow-xl`
+            phoneCard.innerHTML = `
+            <figure><img src=${phone.image}
+            alt="Shoes" /></figure>
+            <div class="card-body">
+            <h2 class="card-title">${phone.phone_name}</h2>
+            <p>${phone.slug}</p>
+            <div class="card-actions justify-end">
+            <button class="btn btn-primary">Buy Now</button>
+            </div>
+            </div>
+            `
+            phoneContainer.appendChild(phoneCard)
+        })
+        toggleLoader(false)
+    }
+    
+    const handleSearch = (isShowAll) => {
+        toggleLoader(true);
+        const SearchField = document.getElementById('SearchField');
+        const searchText = SearchField.value;
+        phoneLoading(searchText, isShowAll)
+        // SearchField.value = ''
+    }
+    
+    const toggleLoader = (isLoading) =>{
+        const loader = document.getElementById('loader');
+        if(isLoading){
+            loader.classList.remove('hidden')
+        }
+        else
+        {
+            loader.classList.add('hidden')
+        }
+    }
+    
+    const handleShowAll = () => {
+        handleSearch(true);
+    }
